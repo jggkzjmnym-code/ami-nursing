@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no, email=no, address=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#667eea">
+    <title>AMI全人护理系统 - 温附一</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            padding-bottom: 40px;
+            -webkit-text-size-adjust: 100%;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        .header {
+            background: linear-gradient(135deg, #c41e3a 0%, #a01828 100%);
+            border-radius: 16px;
+            padding: 22px 18px;
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -40%;
+            right: -10%;
+            width: 250px;
+            height: 250px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .header h1 {
+            font-size: 1.45rem;
+            margin-bottom: 8px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        .header .subtitle {
+            font-size: 0.85rem;
+            opacity: 0.95;
+            line-height: 1.55;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 12px;
+        }
+        .header .hospital-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            z-index: 1;
+            flex-wrap: wrap;
+        }
+        .hospital-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .view-switcher {
+            background: white;
+            border-radius: 14px;
+            padding: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            display: flex;
+            gap: 6px;
+        }
+        .view-btn {
+            flex: 1;
+            padding: 10px 6px;
+            border: none;
+            background: #f5f7fa;
+            color: #666;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            line-height: 1.3;
+            text-align: center;
+        }
+        .view-btn.active {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(30,60,114,0.4);
+        }
+        .intro-section {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .intro-section h2 {
+            font-size: 1.05rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+        .intro-section p {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+        .intro-section p:last-child {
+            margin-bottom: 0;
+        }
+        .phase-timeline {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 20px;
+        }
+        .phase-timeline::before {
+            content: "";
+            position: absolute;
+            left: 10px;
+            top: 15px;
+            bottom: 15px;
+            width: 3px;
+            background: linear-gradient(180deg, #c41e3a 0%, #667eea 100%);
+            border-radius: 2px;
+        }
+        .phase-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .phase-marker {
+            position: absolute;
+            left: -28px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c41e3a 0%, #a01828 100%);
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 1;
+        }
+        .phase-card {
+            background: white;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        .phase-header {
+            padding: 16px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            background: linear-gradient(90deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        .phase-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        .phase-info {
+            flex: 1;
+        }
+        .phase-title { font-size: 1rem; font-weight: 700; color: #2c3e50; margin-bottom: 5px; }
+        .phase-time { font-size: 0.75rem; color: #7f8c8d; }
+        .phase-arrow { color: #bdc3c7; transition: transform 0.3s ease; font-size: 1.1rem; }
+        .phase-card.expanded .phase-arrow { transform: rotate(180deg); }
+        .phase-content { max-height: 0; overflow: hidden; transition: max-height 0.5s ease; }
+        .phase-card.expanded .phase-content { max-height: 15000px; }
+        .phase-body { padding: 18px; }
+        .care-section {
+            background: #f8f9fa; border-radius: 12px; padding: 16px; margin-bottom: 14px;
+            border-left: 4px solid #667eea;
+        }
+        .care-section-title {
+            display: flex; align-items: center; gap: 8px; margin-bottom: 10px;
+            cursor: pointer; user-select: none;
+        }
+        .care-section-title h3 { font-size: 0.9rem; font-weight: 700; color: #2c3e50; flex: 1; }
+        .care-section-title .arrow { color: #667eea; transition: transform 0.3s ease; }
+        .care-section.expanded .care-section-title .arrow { transform: rotate(90deg); }
+        .care-section-content { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
+        .care-section.expanded .care-section-content { max-height: 8000px; }
+        .care-content-text { padding-top: 10px; font-size: 0.85rem; color: #555; line-height: 1.7; }
+        .info-box { background: #ebf5fb; border-left: 4px solid #3498db; padding: 12px 14px; border-radius: 8px; margin: 10px 0; }
+        .info-box-title { font-weight: 700; color: #2980b9; margin-bottom: 5px; font-size: 0.85rem; }
+        .warning-box { background: #fdedec; border-left: 4px solid #e74c3c; padding: 12px 14px; border-radius: 8px; margin: 10px 0; }
+        .warning-box-title { font-weight: 700; color: #c0392b; margin-bottom: 5px; font-size: 0.85rem; }
+        .success-box { background: #eafaf1; border-left: 4px solid #27ae60; padding: 12px 14px; border-radius: 8px; margin: 10px 0; }
+        .success-box-title { font-weight: 700; color: #1e8449; margin-bottom: 5px; font-size: 0.85rem; }
+        .checklist { background: white; border-radius: 8px; padding: 12px; margin: 10px 0; border: 1px solid #e1e4e8; }
+        .checklist-title { font-weight: 700; color: #2c3e50; margin-bottom: 8px; font-size: 0.85rem; }
+        .checklist-item { display: flex; align-items: flex-start; gap: 8px; padding: 7px 0; border-bottom: 1px solid #f0f1f2; }
+        .checklist-checkbox {
+            width: 20px; height: 20px; border: 2px solid #bdc3c7; border-radius: 5px;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            flex-shrink: 0; transition: all 0.2s ease; background: white; margin-top: 1px;
+        }
+        .checklist-checkbox.checked { background: #27ae60; border-color: #27ae60; color: white; }
+        .checklist-text { flex: 1; font-size: 0.8rem; color: #555; line-height: 1.6; }
+        .quiz-section {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            border-radius: 12px; padding: 16px; margin: 14px 0; border: 2px solid #f39c12;
+        }
+        .quiz-title { font-weight: 700; color: #d68910; margin-bottom: 10px; font-size: 0.9rem; }
+        .quiz-question { font-size: 0.85rem; color: #2c3e50; margin-bottom: 10px; font-weight: 600; }
+        .quiz-options { display: flex; flex-direction: column; gap: 7px; }
+        .quiz-option {
+            padding: 9px 12px; background: white; border: 2px solid #e1e4e8;
+            border-radius: 8px; font-size: 0.8rem; color: #555; cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .quiz-option:hover { background: #f8f9fa; border-color: #f39c12; }
+        .quiz-option.correct { background: #27ae60; border-color: #27ae60; color: white; }
+        .quiz-option.incorrect { background: #e74c3c; border-color: #e74c3c; color: white; }
+        .quiz-feedback { margin-top: 10px; padding: 9px 11px; border-radius: 8px; font-size: 0.8rem; display: none; }
+        .quiz-feedback.show { display: block; }
+        .quiz-feedback.correct { background: #eafaf1; color: #1e8449; border-left: 4px solid #27ae60; }
+        .quiz-feedback.incorrect { background: #fdedec; color: #c0392b; border-left: 4px solid #e74c3c; }
+        .phase-item:nth-child(1) .phase-icon { background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); }
+        .phase-item:nth-child(2) .phase-icon { background: linear-gradient(135deg, #3498db 0%, #2980b9 100%); }
+        .phase-item:nth-child(3) .phase-icon { background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%); }
+        .phase-item:nth-child(4) .phase-icon { background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%); }
+        .phase-item:nth-child(5) .phase-icon { background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%); }
+        .footer { text-align: center; color: white; opacity: 0.8; padding: 20px; font-size: 0.85rem; }
+        ul { padding-left: 20px; margin-top: 8px; }
+        li { margin: 5px 0; }
+        .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+        .team-member { background: white; padding: 12px; border-radius: 10px; text-align: center; border: 1px solid #e1e4e8; }
+        .team-member-icon { font-size: 1.8rem; margin-bottom: 6px; }
+        .team-member-name { font-size: 0.8rem; font-weight: 700; color: #2c3e50; margin-bottom: 3px; }
+        .team-member-role { font-size: 0.7rem; color: #7f8c8d; line-height: 1.35; }
+        .hidden-for-patient { display: block; }
+        .hidden-for-staff { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❤️ AMI全人护理系统</h1>
+            <div class="subtitle">温州医科大学附属第一医院心血管中心·多学科心团队照护模式<br>整合患者端与医护端功能，提供全方位照护体验</div>
+            <div class="hospital-info">
+                <div class="hospital-badge">🏥 温附一医</div>
+                <div class="hospital-badge">🏆 三甲医疗品质</div>
+                <div class="hospital-badge">🤝 Heart Team</div>
+            </div>
+        </div>
+
+        <div class="view-switcher">
+            <button class="view-btn active" onclick="switchView('patient')">👤 患者/家属</button>
+            <button class="view-btn" onclick="switchView('staff')">👨‍⚕️ 医护人员</button>
+        </div>
+
+        <div class="intro-section">
+            <h2>📖 照护指引</h2>
+            <p>心肌梗死的诊断对您和家人来说都是一次艰难的经历。这份指引将陪伴您走过从急诊急救、住院治疗、康复到居家照护的每个阶段，告诉您每个阶段会发生什么、您该如何配合，以及我们的专业团队将如何照顾您。</p>
+            <p>💡 使用方法：点击下方各个阶段的卡片，展开查看详细内容。每个章节都有生动的说明、实用的清单和趣味小测验，帮助您更好地理解护理知识。</p>
+        </div>
+
+        <div class="phase-timeline">
+            <!-- 阶段一：急诊急救阶段 -->
+            <div class="phase-item">
+                <div class="phase-marker"></div>
+                <div class="phase-card">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <div class="phase-icon">🚑</div>
+                        <div class="phase-info">
+                            <div class="phase-title">阶段一：急诊急救阶段</div>
+                            <div class="phase-time">发病后 0-24 小时 | 最关键的黄金时刻</div>
+                        </div>
+                        <div class="phase-arrow">▼</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="phase-body">
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🏥 什么是急诊急救阶段？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>当您因胸痛被送进急诊室时，这就是急诊急救阶段的开始。这段时间非常紧迫，因为心肌梗死发作后送医院的速度越快越好，目标是90分钟内恢复血流，所以请立即拨打120，前往有能力开展急诊心导管介入治疗的医院。</p>
+                                        <p style="margin-top: 10px;">在这个阶段，医护人员会尽快确认您的诊断，评估病情严重程度，并决定是否需要紧急进行心导管介入治疗。时间就是心肌，时间就是生命！</p>
+                                        <div class="info-box">
+                                            <div class="info-box-title">📊 温附一医优势</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                我们严格执行门-球时间（D2B，Door to Balloon）目标<90分钟的规范，确保急性心梗患者在黄金时间内得到及时有效的介入治疗，最大程度保护心肌功能。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🔍 您会经历什么检查？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>在急诊室，医师会为您安排以下重要检查：</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 12导联心电图（ECG）</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                这是最重要的检查！医师会在您的胸部、手臂和腿上贴上电极片，记录心脏的电活动。心电图可以帮助医师快速判断您是否患有心肌梗死，以及心肌梗死的部位和范围。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 血液检查</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                我们会抽血检查「肌钙蛋白」和「心肌酶」。这些蛋白质在心肌受损时会释放到血液中，它们的水平可以帮助医师确认心肌梗死的诊断，并评估心肌受损的程度。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 胸部X光</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                评估心脏大小和肺部情况，排除其他可能引起胸痛的原因。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 二十四小时心电图检查</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                我们会为您佩戴便携式动态心电图机，连续24小时监测记录您的心电数据，评估心律是否异常。佩戴前请先洗澡，佩戴后避免贴片脱落、导线沾水，小心保护仪器，请勿碰撞遗失。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>💊 您会接受什么治疗？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>根据您的病情，医师可能会采用以下治疗方式：</p>
+                                        <div class="info-box">
+                                            <div class="info-box-title">🔧 心导管介入治疗（PCI）</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                这是目前治疗心肌梗死最有效的方法。医师会在您手腕或大腿根部穿刺一个小孔，将细管插入心脏，通过球囊扩张堵塞的血管并放置支架撑开，恢复血流。整个过程约30-60分钟，通常在局部麻醉下进行，您会保持清醒但有可能有轻微疼痛感。
+                                            </div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-box-title">💊 硝化甘油片</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                这是缓解心绞痛的急救药物。当您感到胸痛时，立即舌下含服1片硝化甘油，不要吞服。如果5分钟后胸痛没有缓解，可以再含服1片，最多连续含服3片。含服后可能会有轻微头痛、脸部潮红，这是正常的血管扩张反应。服药后请坐下或躺下，避免因血压下降而头晕跌倒。
+                                            </div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-box-title">💊 其他药物治疗</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                <ul>
+                                                    <li><strong>抗血小板药物：</strong>如阿司匹林、替格瑞洛，防止血栓再次形成</li>
+                                                    <li><strong>抗凝药物：</strong>如肝素，防止血液凝固</li>
+                                                    <li><strong>他汀类药物：</strong>如阿托伐他汀，降低胆固醇，稳定斑块</li>
+                                                    <li><strong>止痛药：</strong>如吗啡，缓解胸痛</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🤝 您和家属如何配合？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>在这个阶段，您和家属的配合至关重要：</p>
+                                        <div class="checklist">
+                                            <div class="checklist-title">📋 家属配合事项</div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">保持冷静，相信医护团队的专业判断</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">详细告知医师病患的病史、过敏史、用药情况</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">手术同意书签署时要仔细阅读，有疑问立即询问</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">在等待区耐心等候，避免干扰医护人员工作</div>
+                                            </div>
+                                        </div>
+                                        <div class="checklist">
+                                            <div class="checklist-title">📋 病患配合事项</div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">听从医护人员指示，尽量保持平静</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">如需药物治疗，按医嘱嚼服药物</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">告诉医护人员您的疼痛程度和位置</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">避免用力、焦虑或移动，保持休息状态</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-section">
+                                <div class="quiz-title">🧠 小测验：急诊阶段知识检测</div>
+                                <div class="quiz-question">Q1: 心肌梗死发作后，抢救心肌的黄金时刻是多长时间？</div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">A. 24小时内</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, true)">B. 几小时内</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">C. 3天内</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">D. 一周内</div>
+                                </div>
+                                <div class="quiz-feedback">正确！心肌梗死发作后的最初几小时是抢救心肌的黄金时刻，越早开通血管，心肌坏死越少。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段二：住院治疗阶段 -->
+            <div class="phase-item">
+                <div class="phase-marker"></div>
+                <div class="phase-card">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <div class="phase-icon">🏥</div>
+                        <div class="phase-info">
+                            <div class="phase-title">阶段二：住院治疗阶段</div>
+                            <div class="phase-time">术后全程监护与康复启动</div>
+                        </div>
+                        <div class="phase-arrow">▼</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="phase-body">
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🏥 什么是住院治疗阶段？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>急诊介入治疗（PCI）后，我们会根据您的病情风险分层，安排个体化的监护方案：血流动力学不稳定、合并并发症的高危患者会进入<strong>心脏重症监护病房（CCU）</strong>接受严密监护；简单病变、术后状态稳定的低危患者可直接转回普通心内科病房。这个阶段的核心目标是：持续监测病情变化、预防并发症、促进心脏功能恢复，并为后续康复训练做好准备。</p>
+                                        <p style="margin-top: 10px;">在温州医科大学附属第一医院，我们采用<strong>多学科心团队（Heart Team）</strong>照护模式，心内科医师、专科护士、营养师、康复治疗师等专业人员会共同照顾您，为您制定个性化的治疗和康复计划。</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">📊 温附一医优势</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                我们的心脏专科护理团队具备丰富的心血管疾病照护经验，无论是CCU的24小时严密监护，还是普通心内科病房的精细化护理，都会密切观察您的病情变化，确保任何异常都能被及时发现和处理。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>📊 每天会接受什么监测？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>住院期间医护人员会密切监测您的以下指标：</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 心电监测</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                持续监测您的心跳规律，警惕可能出现的心律失常（如心室早搏、心室颤动）。特别警惕恶性心律失常（如室颤），如出现心跳剧烈加速、头晕、眼前发黑，立即告知护士。CCU护士会24小时守护在旁，一旦发现异常会立即处理。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 血压监测</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                每小时测量血压，目标维持收缩压在90-140mmHg之间（具体目标请遵医嘱，因人而异）。血压过低可能影响心脏供血，血压过高会增加心脏负担。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 血氧监测</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                持续监测血氧饱和度，目标维持在94%以上。如血氧过低，可能需要给予氧气治疗。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 电解质检查</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                每日抽血检查血钾、钠等电解质水平。血钾维持在4.0-5.0mmol/L最理想，低血钾容易诱发心律失常。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>💊 住院期间用药指导</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>住院期间您会接受多种药物治疗，每种药物都有重要作用：</p>
+                                        <div class="info-box">
+                                            <div class="info-box-title">✅ 必须坚持服用的药物</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                <ul>
+                                                    <li><strong>抗血小板药物：</strong>双联抗血小板治疗防止血栓再次形成，建议至少服用12个月，之后可根据情况转为单抗治疗。</li>
+                                                    <li><strong>他汀类药物：</strong>降低胆固醇，稳定血管斑块，需要长期服用</li>
+                                                    <li><strong>ACEI或ARB类：</strong>保护心脏，帮助心脏更有效地泵血，防止心脏变大变弱</li>
+                                                    <li><strong>β受体阻断剂：</strong>减轻心脏负担，减少心绞痛发作</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="warning-box">
+                                            <div class="warning-box-title">⚠️ 用药注意事项</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                绝对不要自行停药或减量，即使感觉好转也要按医嘱服用。如出现副作用（如头晕、胃部不适），立即告知医护人员。建立用药清单，记录药名、剂量、服用时间。出院时向药师咨询用药问题，确保清楚每种药物的用途。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🤝 谁会照顾您？住院医护团队</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <div class="team-grid">
+                                            <div class="team-member">
+                                                <div class="team-member-icon">👨‍⚕️</div>
+                                                <div class="team-member-name">心内科医师</div>
+                                                <div class="team-member-role">每日查房<br>评估病情<br>调整治疗方案</div>
+                                            </div>
+                                            <div class="team-member">
+                                                <div class="team-member-icon">👩‍⚕️</div>
+                                                <div class="team-member-name">CCU护理师</div>
+                                                <div class="team-member-role">24小时监测<br>执行医嘱<br>病情观察记录</div>
+                                            </div>
+                                            <div class="team-member">
+                                                <div class="team-member-icon">🍎</div>
+                                                <div class="team-member-name">营养师</div>
+                                                <div class="team-member-role">饮食评估<br>营养建议<br>制定餐单</div>
+                                            </div>
+                                            <div class="team-member">
+                                                <div class="team-member-icon">🏃</div>
+                                                <div class="team-member-name">物理治疗师</div>
+                                                <div class="team-member-role">康复评估<br>制定运动计划<br>指导正确活动</div>
+                                            </div>
+                                            <div class="team-member">
+                                                <div class="team-member-icon">💊</div>
+                                                <div class="team-member-name">临床药师</div>
+                                                <div class="team-member-role">用药审核<br>药物教育<br>副作用监测</div>
+                                            </div>
+                                            <div class="team-member">
+                                                <div class="team-member-icon">💭</div>
+                                                <div class="team-member-name">心理咨询师</div>
+                                                <div class="team-member-role">心理评估<br>焦虑干预<br>情绪支持</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-section">
+                                <div class="quiz-title">🧠 小测验：住院阶段知识检测</div>
+                                <div class="quiz-question">Q2: 住院期间，血压应维持在什么范围比较理想？</div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">A. 收缩压60-80mmHg</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, true)">B. 收缩压90-140mmHg</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">C. 收缩压160-180mmHg</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">D. 血压越高越好</div>
+                                </div>
+                                <div class="quiz-feedback">正确！血压过低影响心脏供血，血压过高增加心脏负担，90-140mmHg是最理想的区间。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段三：出院准备与指导 -->
+            <div class="phase-item">
+                <div class="phase-marker"></div>
+                <div class="phase-card">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <div class="phase-icon">🏠</div>
+                        <div class="phase-info">
+                            <div class="phase-title">阶段三：出院准备与指导</div>
+                            <div class="phase-time">出院前 · 为居家生活做好准备</div>
+                        </div>
+                        <div class="phase-arrow">▼</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="phase-body">
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>📋 出院准备清单</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>出院并不代表治疗结束，而是另一个阶段的开始。出院前，我们会帮助您做好充分准备：</p>
+                                        <div class="checklist">
+                                            <div class="checklist-title">✅ 出院前请逐一确认</div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">清楚了解所有出院用药的名称、剂量、服用时间和副作用</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">掌握居家自我监测的方法（血压、心率、体重）</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">了解什么情况需要立即回诊或挂急诊</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">建立居家用药和测量纪录表</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">安排好出院后的复诊时间</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">与家属沟通好居家照护安排</div>
+                                            </div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-box-title">📊 温附一医优势</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                我们设有专门的<strong>出院护理师</strong>和<strong>个案管理师</strong>，会在出院前为您提供详细的健康教育，并在出院后定期电话追踪，确保您能顺利适应居家生活。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>💊 出院后用药管理</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>出院后，药物治疗是预防再次心梗的关键。您需要长期服用以下药物：</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 抗血小板药物（双联）</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                阿司匹林100mg每日一次，长期服用；替格瑞洛90mg每日两次或氯吡格雷75mg每日一次，PCI术后至少服用12个月。注意监测出血倾向（牙龈出血、黑便等）。这些药物会延长出血时间，刷牙时如牙龈出血、受伤后出血时间延长都属正常现象。如出现黑便、血尿、严重头痛，立即就医。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 他汀类药物</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                高强度他汀类药物如阿托伐他汀40-80mg或瑞舒伐他汀20-40mg，睡前服用，长期服用。这种药物可以降低胆固醇，稳定血管内的斑块，预防再次堵塞。部分人可能会有肌肉酸痛、肝功能异常等副作用，如出现严重肌肉酸痛，请告知医师。若他汀无法控制LDL-C达标，医师可能会加用PCSK9抑制剂，每两周注射一次。
+                                            </div>
+                                        </div>
+                                        <div class="warning-box">
+                                            <div class="warning-box-title">⚠️ 用药提醒</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                设定闹钟提醒自己按时服药，不要漏服。准备一个分药盒，将每日药物分装好。外出旅行时，携带足够的药物。不要因为「感觉好了」就自行停药。定期复诊，让医师评估药物效果并调整剂量。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>⚠️ 什么情况需要紧急就医？</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>出院后，如果出现以下情况，请立即就医或拨打120：</p>
+                                        <div class="warning-box">
+                                            <div class="warning-box-title">🚨 紧急就医指征</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                <ul>
+                                                    <li>胸痛或胸闷持续超过15分钟，且休息或舌下含服硝化甘油无效</li>
+                                                    <li>严重呼吸困难，无法平躺</li>
+                                                    <li>心跳过快或过慢，感到头晕、晕厥</li>
+                                                    <li>双下肢严重水肿，活动后气喘加重</li>
+                                                    <li>突然大量出汗、恶心、呕吐</li>
+                                                    <li>黑便或血尿（出血迹象）</li>
+                                                    <li>严重肌肉酸痛（可能是药物副作用）</li>
+                                                    <li>突发意识丧失、晕倒、抽搐 → 可能为恶性心律失常，立即拨打120</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-box-title">📞 紧急联系电话</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                温附一医急诊电话：0577-55579111<br>120紧急救助
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-section">
+                                <div class="quiz-title">🧠 小测验：出院准备知识检测</div>
+                                <div class="quiz-question">Q3: 抗血小板药物（阿司匹林、氯吡格雷）的常见副作用是什么？</div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">A. 便秘</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, true)">B. 出血倾向（牙龈出血、黑便）</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">C. 脱发</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">D. 视力模糊</div>
+                                </div>
+                                <div class="quiz-feedback">正确！抗血小板药物的作用是防止血栓形成，因此常见副作用是出血倾向，需留意牙龈出血、黑便等信号。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段四：居家照护与康复 -->
+            <div class="phase-item">
+                <div class="phase-marker"></div>
+                <div class="phase-card">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <div class="phase-icon">🏡</div>
+                        <div class="phase-info">
+                            <div class="phase-title">阶段四：居家照护与康复</div>
+                            <div class="phase-time">出院后6个月 | 长期健康生活方式</div>
+                        </div>
+                        <div class="phase-arrow">▼</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="phase-body">
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>📊 居家自我监测</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>回家后，您需要学会自我监测以下3项关键指标：</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 每日测量血压和心率</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                每天早上起床后、服药前测量血压和心率，记录在本子上。正常血压应低于140/90mmHg，心率维持在60-70次/分左右。如果血压持续高于160mmHg或低于90mmHg，及时联系医师。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 每日测量体重</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                每天早上空腹、排空大小便后、穿同样衣服称重。如果3天内体重增加超过2公斤，说明体内水分潴留，可能是心衰早期信号，请及时回诊。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🏃 心脏康复计划</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>心脏康复是心肌梗死恢复的重要部分，分两期循序渐进：</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 第一期：住院期康复</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                住院期心脏康复，物理治疗师在床边指导简单运动。目标是减少并发症，恢复基本活动功能。由物理治疗师在床边指导进行简单运动。
+                                            </div>
+                                        </div>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 第二期：出院后康复（8-12周）</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                在医院或社区康复中心进行系统化训练。从慢走开始，逐步增加运动量。运动时以能说话不喘气为原则，避免剧烈运动。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>📅 出院后随访计划</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>定期随访对预防再次心梗非常重要。我们会为您安排：</p>
+                                        <div class="checklist">
+                                            <div class="checklist-title">📋 随访时间表</div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">出院后1周：电话随访，评估药物依从性、症状控制、生活方式改变</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">出院后1个月：门诊复查，心脏超声（评估LVEF）、血脂（目标LDL-C&lt;1.8mmol/L）</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">出院后3个月：全面评估心功能、用药效果、生活质量</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">出院后6个月：长期随访，评估再梗死风险、康复效果</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">之后：每3-6个月定期复诊，根据病情调整</div>
+                                            </div>
+                                        </div>
+                                        <div class="info-box">
+                                            <div class="info-box-title">📊 温附一医优势</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                我们的个案管理师会主动联系您，提醒您复诊时间，并在电话中了解您的健康状况，确保您持续得到关心和照护。
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-section">
+                                <div class="quiz-title">🧠 小测验：居家照护知识检测</div>
+                                <div class="quiz-question">Q4: 居家监测时，如果体重在3天内增加多少公斤以上，需要就医？</div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">A. 0.5公斤</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">B. 1公斤</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, true)">C. 2公斤</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">D. 5公斤</div>
+                                </div>
+                                <div class="quiz-feedback">正确！3天内体重增加超过2公斤是心衰早期预警信号，提示体内水分潴留，需要及时回诊调整利尿剂剂量。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 阶段五：长期健康维护 -->
+            <div class="phase-item">
+                <div class="phase-marker"></div>
+                <div class="phase-card">
+                    <div class="phase-header" onclick="togglePhase(this)">
+                        <div class="phase-icon">⭐</div>
+                        <div class="phase-info">
+                            <div class="phase-title">阶段五：长期健康维护</div>
+                            <div class="phase-time">出院后6个月以上 | 终身健康生活</div>
+                        </div>
+                        <div class="phase-arrow">▼</div>
+                    </div>
+                    <div class="phase-content">
+                        <div class="phase-body">
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>🎯 长期治疗目标</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>心梗后长期健康维护的核心目标是控制6项关键指标：</p>
+                                        <div class="success-box">
+                                            <div class="success-box-title">✅ 六大核心目标</div>
+                                            <div style="font-size:0.8rem;color:#555;line-height:1.6;">
+                                                <ul>
+                                                    <li>血压 &lt; 140/90 mmHg</li>
+                                                    <li>LDL-C（坏胆固醇）&lt; 1.8 mmol/L</li>
+                                                    <li>空腹血糖 &lt; 7.0 mmol/L</li>
+                                                    <li>不吸烟、完全戒烟</li>
+                                                    <li>每周至少150分钟中等强度运动</li>
+                                                    <li>保持健康体重，BMI 18.5-24</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="care-section">
+                                <div class="care-section-title" onclick="toggleCareSection(this)">
+                                    <h3>👨‍👩‍👧 家属支持与照护</h3>
+                                    <span class="arrow">▶</span>
+                                </div>
+                                <div class="care-section-content">
+                                    <div class="care-content-text">
+                                        <p>家属的支持是心脏康复成功的关键：</p>
+                                        <div class="checklist">
+                                            <div class="checklist-title">📋 家属照护清单</div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">帮助提醒患者按时服药，不要漏服</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">一起准备低盐低脂的健康饮食</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">陪伴患者一起规律运动，如饭后散步</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">鼓励戒烟，家里不要放烟和打火机</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">关注患者情绪，避免过度焦虑和抑郁</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">陪同定期复诊，记录医师的建议</div>
+                                            </div>
+                                            <div class="checklist-item">
+                                                <div class="checklist-checkbox" onclick="toggleCheckbox(this)"></div>
+                                                <div class="checklist-text">参与社区健康活动，如健走团、太极拳班</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="quiz-section">
+                                <div class="quiz-title">🧠 小测验：长期维护知识检测</div>
+                                <div class="quiz-question">Q5: 心脏康复计划包括哪几个阶段？</div>
+                                <div class="quiz-options">
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">A. 只有住院期</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">B. 只有出院后</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, true)">C. 住院期+出院后长期康复</div>
+                                    <div class="quiz-option" onclick="checkQuiz(this, false)">D. 不需要康复</div>
+                                </div>
+                                <div class="quiz-feedback">正确！心脏康复是全周期过程，从住院床边开始，一直延续到出院后长期坚持，才能最大程度恢复心功能。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            ❤️ 祝您早日康复！温附一医多学科心团队
+        </div>
+    </div>
+
+    <script>
+        function togglePhase(header) {
+            const card = header.closest('.phase-card');
+            card.classList.toggle('expanded');
+        }
+        function toggleCareSection(title) {
+            const section = title.closest('.care-section');
+            section.classList.toggle('expanded');
+        }
+        function toggleCheckbox(box) {
+            box.classList.toggle('checked');
+        }
+        function checkQuiz(option, isCorrect) {
+            const options = option.parentElement.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.pointerEvents = 'none';
+            });
+            if (isCorrect) {
+                option.classList.add('correct');
+            } else {
+                option.classList.add('incorrect');
+            }
+            const feedback = option.closest('.quiz-section').querySelector('.quiz-feedback');
+            feedback.classList.add('show');
+            if (isCorrect) {
+                feedback.classList.add('correct');
+                feedback.classList.remove('incorrect');
+            } else {
+                feedback.classList.add('incorrect');
+                feedback.classList.remove('correct');
+            }
+        }
+        function switchView(mode) {
+            const btns = document.querySelectorAll('.view-btn');
+            btns.forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (mode === 'patient') {
+                document.querySelectorAll('.hidden-for-patient').forEach(el => el.style.display = 'block');
+                document.querySelectorAll('.hidden-for-staff').forEach(el => el.style.display = 'none');
+            } else {
+                document.querySelectorAll('.hidden-for-patient').forEach(el => el.style.display = 'none');
+                document.querySelectorAll('.hidden-for-staff').forEach(el => el.style.display = 'block');
+            }
+        }
+    </script>
+</body>
+</html>
